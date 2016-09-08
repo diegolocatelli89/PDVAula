@@ -1,0 +1,11 @@
+﻿<ul class="nav navbar-nav">
+    <li>@Html.ActionLink("Início", "Index", "Home")</li>
+
+    @if (Request.IsAuthenticated && User.IsInRole("Admin"))
+    {
+        <li>@Html.ActionLink("Clientes", "Lista", "Clientes")</li>
+    }
+    <li>@Html.ActionLink("Sobre", "About", "Home")</li>
+    <li>@Html.ActionLink("Contato", "Contact", "Home")</li>
+    <li>@Html.ActionLink("Usuários", "Index", "Usuarios")</li>
+</ul>

@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Csystems.Aula02.Dominio.Entidades.Cliente>
+
+@{
+    ViewBag.Title = "Lista";
+}
+
+<h2>Lista</h2>
+
+<p>
+    @Html.ActionLink("Novo Cliente", "Incluir")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Nome)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Fantasia)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CPF)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Nome)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Fantasia)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CPF)
+        </td>
+        <td>
+            @Html.ActionLink("Editar", "Editar", new { id=item.ClienteId }) |
+            @*@Html.ActionLink("Details", "Detalhes", new { id=item.ClienteId }) |*@
+            @Html.ActionLink("Delete", "Excluir", new { id=item.ClienteId })
+        </td>
+    </tr>
+}
+
+</table>
