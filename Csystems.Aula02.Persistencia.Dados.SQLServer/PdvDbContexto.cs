@@ -58,6 +58,7 @@ namespace Csystems.Aula02.Persistencia.Dados.SQLServer
         {
             ChangeTracker.Entries().ToList().ForEach(entry => entry.State = EntityState.Unchanged);
         }
+
     }
 }
 

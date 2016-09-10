@@ -53,7 +53,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuracao\CategoriaConfiguracao.cs" />
     <Compile Include="Configuracao\ClienteConfiguracao.cs" />
+    <Compile Include="Configuracao\ProdutoConfiguracao.cs" />
     <Compile Include="Interfaces\IUnitOfWork.cs" />
     <Compile Include="Migrations\201609031331441_CriacaoBanco.cs" />
     <Compile Include="Migrations\201609031331441_CriacaoBanco.Designer.cs">

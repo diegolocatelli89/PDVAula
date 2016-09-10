@@ -4,6 +4,7 @@ using Csystems.Aula02.Repositorio.Interfaces;
 using System;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace Csystems.Aula02.Repositorio.Classes
 {
@@ -20,29 +21,59 @@ namespace Csystems.Aula02.Repositorio.Classes
 
             _unitOfWork = unitOfWork;
         }
-        public T Alterar()
+
+        public IUnitOfWork UnitOfWork { get { return _unitOfWork; } }
+        public DbSet<T> Contexto { get { return _contexto; } }
+
+        public T Incluir(T entidade)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _contexto.Add(entidade);
+                ((PdvDbContexto)_unitOfWork).Entry(entidade).State = EntityState.Added;
+            }
+            catch (Exception err)
+            {
+                throw new Exception(err.Message);
+            }
+            return entidade;
         }
 
-        public bool Excluir()
+        public T Alterar(T entidade)
         {
-            throw new NotImplementedException();
+            try
+            {
+                ((PdvDbContexto)_unitOfWork).Entry(entidade).State = EntityState.Modified;
+            }
+            catch (Exception err)
+            {
+                throw new Exception(err.Message);
+            }
+            return entidade;
         }
 
-        public bool Incluir()
+        public void Excluir(T entidade)
         {
-            throw new NotImplementedException();
-        }
-
-        public T Obter(int Id)
-        {
-            throw new NotImplementedException();
+            try
+            {
+                _contexto.Remove(entidade);
+                //Desnecessário
+                //((PdvDbContexto)_unitOfWork).Entry(entidade).State = EntityState.Deleted;
+            }
+            catch (Exception err)
+            {
+                throw new Exception(err.Message);
+            }
         }
 
         public IQueryable<T> ObterTodos()
         {
-            throw new NotImplementedException();
+            return _contexto;
+        }
+
+        public T Obter(Expression<Func<T, bool>> filtro)
+        {
+            return _contexto.FirstOrDefault(filtro);
         }
     }
 }

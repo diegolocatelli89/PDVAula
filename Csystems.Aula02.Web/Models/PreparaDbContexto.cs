@@ -5,6 +5,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 
 namespace Csystems.Aula02.Web.Models
 {
@@ -42,11 +43,13 @@ namespace Csystems.Aula02.Web.Models
                 }
 
                 PopularClientes(pdvDbContexto);
+                PopularCategorias(pdvDbContexto);
+                PopularProdutos(pdvDbContexto);
             }
-            catch (Exception)
+            catch (Exception err)
             {
 
-                throw;
+                throw ;
             }
         }
 
@@ -59,8 +62,29 @@ namespace Csystems.Aula02.Web.Models
                 Cliente cli = new Cliente();
                 cli.Nome = Faker.Name.NomeCompleto();
                 cli.CPF = Faker.RandomNumber.Next(10000000).ToString();
+                cli.Fantasia = cli.Nome;
                 contexto.Clientes.Add(cli);
             }
+            contexto.SaveChanges();
+        }
+
+        private void PopularCategorias(PdvDbContexto contexto)
+        {
+            contexto.Categorias.Add(new Categoria { Descricao = "Carnes" });
+            contexto.Categorias.Add(new Categoria { Descricao = "Laticinio" });
+            contexto.Categorias.Add(new Categoria { Descricao = "Limpeza" });
+            contexto.Categorias.Add(new Categoria { Descricao = "Pet" });            
+            contexto.SaveChanges();
+        }
+
+        private void PopularProdutos(PdvDbContexto contexto)
+        {
+            var cat1 = contexto.Categorias.Where(x => x.Descricao == "Carnes").FirstOrDefault();
+            contexto.Produtos.Add(new Produto { Descricao = "Picanha", Categoria = cat1, CategoriaId = cat1.CategoriaId});
+            var cat2 = contexto.Categorias.Where(x => x.Descricao == "Laticinio").FirstOrDefault();
+            contexto.Produtos.Add(new Produto { Descricao = "Leite Lider", Categoria = cat2, CategoriaId = cat2.CategoriaId });
+            var cat3 = contexto.Categorias.Where(x => x.Descricao == "Limpeza").FirstOrDefault();
+            contexto.Produtos.Add(new Produto { Descricao = "Veja Multi uso", Categoria = cat3, CategoriaId = cat3.CategoriaId });
             contexto.SaveChanges();
         }
     }

@@ -6,16 +6,20 @@ using System.Net;
 using System.Web.Mvc;
 using Csystems.Aula02.Dominio.Entidades;
 using AutoMapper;
+using Csystems.Aula02.Repositorio.Classes;
 
 namespace Csystems.Aula02.Web.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class ClientesController : Controller
     {
-        PdvDbContexto db = new PdvDbContexto();
+        private PdvDbContexto _contexto;
+        private RepositorioClientes _repositorio;
+
         public ClientesController()
         {
-
+            _contexto = new PdvDbContexto();
+            _repositorio = new RepositorioClientes(_contexto);
         }
         // GET: Clientes
         public ActionResult Index()
@@ -25,7 +29,8 @@ namespace Csystems.Aula02.Web.Controllers
 
         public  ActionResult Lista(int pagina = 1, int registros = 100)
         {
-            var model = db.Clientes.OrderBy(c => c.Nome).Skip((pagina-1)*registros).Take(registros);
+            //var model = db.Clientes.OrderBy(c => c.Nome).Skip((pagina-1)*registros).Take(registros);
+            var model = _repositorio.ObterTodos().OrderBy(c => c.Nome).Skip((pagina - 1) * registros).Take(registros);
             return View(model);
         }
 
@@ -51,8 +56,8 @@ namespace Csystems.Aula02.Web.Controllers
 
                     //Cliente dadosCliente = Mapper.Map<ClienteViewModel>(cliente);
 
-                    db.Clientes.Add(dadosCliente);
-                    db.SaveChanges();
+                    _repositorio.Incluir(dadosCliente);
+                    _contexto.Commit();
                     return RedirectToAction("Lista");
                 }
                 return RedirectToAction("Lista");
@@ -70,7 +75,7 @@ namespace Csystems.Aula02.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var model = db.Clientes.First(x => x.ClienteId == id);
+            var model = _repositorio.Obter(x => x.ClienteId == id);
 
             ClienteViewModel view = new ClienteViewModel();
             view.ClienteId = model.ClienteId;
@@ -92,13 +97,13 @@ namespace Csystems.Aula02.Web.Controllers
             {
                 try
                 {
-                    var dados = db.Clientes.Find(cliente.ClienteId);
+                    var dados = _repositorio.Obter(c => c.ClienteId == cliente.ClienteId);
                     dados.CPF = cliente.CPF;
                     dados.Fantasia = cliente.Fantasia;
                     dados.Nome = cliente.Nome;
 
-                    db.Entry(dados).State = EntityState.Modified;
-                    db.SaveChanges();
+                    _repositorio.Alterar(dados);
+                    _contexto.Commit();               
                     return RedirectToAction("Lista");
                 }
                 catch
@@ -111,7 +116,7 @@ namespace Csystems.Aula02.Web.Controllers
 
         public ActionResult Detalhes(int id)
         {
-            var model = db.Clientes.Where(x => x.ClienteId == id).First();
+            var model = _repositorio.Obter(x => x.ClienteId == id);
             return View(model);
         }
 
@@ -122,7 +127,7 @@ namespace Csystems.Aula02.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var model = db.Clientes.First(x => x.ClienteId == id);
+            var model = _repositorio.Obter(x => x.ClienteId == id);
 
             if (model == null)
             {
@@ -145,9 +150,9 @@ namespace Csystems.Aula02.Web.Controllers
         {
             try
             {
-                var model = db.Clientes.Find(id);
-                db.Clientes.Remove(model);
-                db.SaveChanges();
+                var model = _repositorio.Obter(c => c.ClienteId == id);
+                _repositorio.Excluir(model);
+                _contexto.Commit();
                 return RedirectToAction("Lista");
             }
             catch

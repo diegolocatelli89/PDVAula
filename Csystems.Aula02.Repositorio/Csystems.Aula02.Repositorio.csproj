@@ -51,6 +51,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Repositorio.cs" />
+    <Compile Include="Classes\RepositorioCategorias.cs" />
+    <Compile Include="Classes\RepositorioClientes.cs" />
+    <Compile Include="Classes\RepositorioProdutos.cs" />
     <Compile Include="Interfaces\IRepositorio.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
